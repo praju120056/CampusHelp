@@ -1,0 +1,29 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# real timetable and local data (the name map links real names to Faculty N)
+data/*.xlsx
+data/*.csv
+backend/.secret_key
+*.db
+*.db-wal
+*.db-shm
+*.sqlite3
+uploads/
+
+# python
+.venv/
+__pycache__/
+.pytest_cache/
+
+# node
+node_modules/
+.next/
+
+# os / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
