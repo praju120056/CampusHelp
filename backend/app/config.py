@@ -37,6 +37,8 @@ class Settings(BaseSettings):
     smtp_from: str = ""
 
     public_base_url: str = "http://localhost:3000"
+    # Testing: when set, every email goes to this one address instead of the real recipient.
+    demo_email_to: str = ""
     cors_origins: str = "http://localhost:3000"
     cors_origin_regex: str = LAN_ORIGIN_REGEX
 

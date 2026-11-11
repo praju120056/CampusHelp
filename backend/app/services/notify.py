@@ -57,6 +57,9 @@ def queue_email(
     settings = get_settings()
     full_link = absolute_link(link)
     text = body + (f"\n\nOpen: {full_link}" if full_link else "") + "\n\n— EduCrew"
+    if settings.demo_email_to and to_addr != settings.demo_email_to:
+        text = f"[Test mode: this email was meant for {to_addr}]\n\n{text}"
+        to_addr = settings.demo_email_to
     note = Notification(
         user_id=user_id,
         channel="email",

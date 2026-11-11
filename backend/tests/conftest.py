@@ -11,6 +11,7 @@ os.environ.update(
         "DEMO_MODE": "false",
         "GEMINI_API_KEY": "",
         "SMTP_HOST": "",
+        "DEMO_EMAIL_TO": "",  # a real .env's test-recipient must not redirect emails inside tests
         "JWT_SECRET": "test-secret-not-for-production-0123456789",
         "UPLOAD_DIR": tempfile.mkdtemp(prefix="educrew-uploads-"),
     }
