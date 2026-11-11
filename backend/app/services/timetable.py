@@ -11,14 +11,15 @@ from sqlalchemy.orm import Session
 
 from app.models import Adjustment, Duty, Leave, TimetableSlot
 
+# RNSIT CSE (AI&ML) bell times (tea break 11:10-11:30, lunch 1:20-2:05).
 PERIOD_TIMES = {
-    1: ("09:00", "09:55"),
-    2: ("09:55", "10:50"),
-    3: ("11:05", "12:00"),
-    4: ("12:00", "12:55"),
-    5: ("13:45", "14:40"),
-    6: ("14:40", "15:35"),
-    7: ("15:35", "16:30"),
+    1: ("09:20", "10:15"),
+    2: ("10:15", "11:10"),
+    3: ("11:30", "12:25"),
+    4: ("12:25", "13:20"),
+    5: ("14:05", "15:00"),
+    6: ("15:00", "15:55"),
+    7: ("15:55", "16:50"),
 }
 ALL_PERIODS = tuple(PERIOD_TIMES)
 DAY_NAMES = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
@@ -37,6 +38,15 @@ class Assignment:
     kind: str = "regular"  # regular | substitute | swap
     adjustment_id: Optional[int] = None
     original_faculty_id: Optional[int] = None
+    batch: Optional[str] = None
+
+
+def same_class_scope(a: "Assignment", b: "Assignment") -> bool:
+    """True when two assignments in the same section and period are in conflict.
+    Different batches run in parallel and co-teachers of one class share a subject; neither is a clash."""
+    if a.subject == b.subject and a.batch == b.batch:
+        return False
+    return a.batch is None or b.batch is None or a.batch == b.batch
 
 
 def periods_label(periods: list[int]) -> str:
@@ -72,7 +82,10 @@ def apply_adjustment(items: list[Assignment], adj: Adjustment, cand) -> list[Ass
 
 def day_assignments(db: Session, d: date, exclude_adjustment_id: Optional[int] = None) -> list[Assignment]:
     slots = db.query(TimetableSlot).filter(TimetableSlot.day == d.weekday()).all()
-    items = [Assignment(s.faculty_id, s.period, s.section, s.subject, s.type, s.room_id, s.id) for s in slots]
+    items = [
+        Assignment(s.faculty_id, s.period, s.section, s.subject, s.type, s.room_id, s.id, batch=s.batch)
+        for s in slots
+    ]
     accepted = (
         db.query(Adjustment)
         .filter(Adjustment.date == d, Adjustment.status == "accepted")
@@ -139,6 +152,7 @@ class DayView:
                     and first.type == "lab"
                     and a.section == first.section
                     and a.subject == first.subject
+                    and a.batch == first.batch
                     and a.kind == first.kind
                     and a.period == periods[-1] + 1
                 ):
@@ -158,10 +172,18 @@ class DayView:
         n_periods = DAY_PERIODS[self.date.weekday()]
         cells: dict[str, dict[int, dict]] = {s: {} for s in sections}
         for a in self.items:
+            label = f"{a.subject} ({a.batch})" if a.batch else a.subject
+            faculty = names.get(a.faculty_id, "?")
+            cell = cells[a.section].get(a.period)
+            if cell is not None:  # parallel batches / co-teachers share one cell
+                cell["subject"] = cell["subject"] if label in cell["subject"].split(" / ") else f"{cell['subject']} / {label}"
+                if faculty not in cell["faculty"].split(", "):
+                    cell["faculty"] += f", {faculty}"
+                continue
             cells[a.section][a.period] = {
-                "subject": a.subject,
+                "subject": label,
                 "type": a.type,
-                "faculty": names.get(a.faculty_id, "?"),
+                "faculty": faculty,
                 "kind": a.kind,
                 "original_faculty": names.get(a.original_faculty_id) if a.original_faculty_id else None,
             }
@@ -185,10 +207,10 @@ class DayView:
                 found.add((fid, period, "class during duty"))
             if period in self.leaves.get(fid, set()):
                 found.add((fid, period, "class during leave"))
-        sections: dict[tuple[str, int], int] = defaultdict(int)
+        sections: dict[tuple[str, int], list[Assignment]] = defaultdict(list)
         for a in self.items:
-            sections[(a.section, a.period)] += 1
-        for (section, period), n in sections.items():
-            if n > 1:
+            sections[(a.section, a.period)].append(a)
+        for (section, period), group in sections.items():
+            if any(same_class_scope(x, y) for i, x in enumerate(group) for y in group[i + 1:]):
                 found.add((-1, period, f"section {section} double-booked"))
         return found

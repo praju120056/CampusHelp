@@ -84,8 +84,8 @@ def find_candidates(db: Session, adj: Adjustment, view: Optional[DayView] = None
         # 1) Swap: the candidate teaches the same section today in a unit of the same length,
         #    and the requester is free then. Both sides are clash-checked.
         for unit_periods, unit in view.units_of(fac.id):
-            if unit.section != adj.section or len(unit_periods) != len(periods):
-                continue
+            if unit.section != adj.section or len(unit_periods) != len(periods) or unit.batch:
+                continue  # swaps are for whole-class periods; lab batches can only be covered by a substitute
             if set(unit_periods) & set(periods) or not view.is_free(adj.requester_id, unit_periods):
                 continue
             out.append(

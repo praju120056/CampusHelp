@@ -21,6 +21,8 @@ class TimetableSlot(Base):
     period: Mapped[int] = mapped_column(Integer)
     room_id: Mapped[Optional[int]] = mapped_column(ForeignKey("locations.id"), nullable=True)
     type: Mapped[str] = mapped_column(String(10), default="theory")
+    # Lab batch such as "A1". None = the whole section. Batches of one section run in parallel.
+    batch: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)
 
     faculty = relationship("Faculty")
     room = relationship("Location")
