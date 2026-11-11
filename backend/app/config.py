@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     gemini_model: str = "gemini-3.7-flash"
     gemini_timeout_seconds: float = 8.0
     gemini_fallback_model: str = "gemini-3.5-flash"  # timetable PDF reading only, if the main model is busy
-    gemini_pdf_timeout_seconds: float = 180.0  # reading a multi-page timetable takes far longer than triage
+    gemini_pdf_timeout_seconds: float = 360.0  # reading a multi-page timetable takes far longer than triage
 
     smtp_host: str = ""
     smtp_port: int = 587

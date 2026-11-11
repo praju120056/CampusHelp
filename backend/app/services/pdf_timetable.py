@@ -211,6 +211,8 @@ Rules:
 - Write one entry in "cells" per period per batch. A cell that spans two or more columns (a lab) is listed once for EACH period it covers.
 - "codes" are the short faculty codes teaching that cell, uppercase, for example ["VZ","VD"]. Use the codes shown in the cell. If the cell shows only a subject, find the faculty code in the course table at the bottom of the page.
 - Cells split by batch (A1/A2, B1/B2 and so on) get one entry per batch, with "batch" set to the batch name (for example "A1") and the faculty for that batch from the table at the bottom. Whole-class periods have "batch": null.
+- A batch cell names a subject for each batch, for example "A1 - AEC / A2 - LDCO". Take each batch's faculty from the table row of THAT subject. Never copy the faculty of another subject that runs in the same period. If the subject has no per-batch row in the table (for example LDCO or a tutorial), its faculty is the subject's normal teacher for the class, the same person for both batches.
+- Read faculty codes letter by letter. Codes that look alike are different people (for example DV and VD, SS and ST, CS and SS).
 - "subject" is the short subject name as written (for example "OS", "DSA", "DS Lab", "AI Lab"). "type" is "lab" for lab, coding-lab and circuit-lab sessions, otherwise "theory".
 - Leave out NSS, PE, Yoga, Music, library hour or activity, tea break and lunch break completely.
 - If a cell has an activity but no faculty can be identified (societal project, mini project, Coursera activity, skills lab), do NOT put it in "cells". List it in "skipped" with its text and a short reason.
