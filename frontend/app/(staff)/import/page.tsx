@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { Icon, Notice, PageHeader } from "@/components/ui";
 import { api, download, errorText } from "@/lib/api";
+import PdfImport from "./pdf-import";
 
 type Report = { rows_read: number; valid_slots: number; errors: string[]; warnings: string[]; new_faculty: string[]; committed: boolean };
 
 export default function ImportPage() {
+  const [tab, setTab] = useState<"pdf" | "xlsx">("pdf");
   const [file, setFile] = useState<File | null>(null);
   const [createMissing, setCreateMissing] = useState(false);
   const [report, setReport] = useState<Report | null>(null);
@@ -33,8 +35,13 @@ export default function ImportPage() {
   return (
     <div className="mx-auto max-w-3xl">
       <PageHeader eyebrow="Module C · HOD" title="Import timetable">
-        Upload the department timetable as Excel. Names are replaced by Faculty 1…N; the name list stays on this laptop only.
+        Upload the department timetable as PDF or Excel. Names are replaced by Faculty 1…N; the name list stays on this laptop only.
       </PageHeader>
+      <div className="mb-6 flex gap-2" role="tablist">
+        <button role="tab" aria-selected={tab === "pdf"} className={tab === "pdf" ? "btn btn-primary btn-sm" : "btn btn-sm"} onClick={() => setTab("pdf")}>PDF</button>
+        <button role="tab" aria-selected={tab === "xlsx"} className={tab === "xlsx" ? "btn btn-primary btn-sm" : "btn btn-sm"} onClick={() => setTab("xlsx")}>Excel</button>
+      </div>
+      {tab === "pdf" ? <PdfImport /> : <>
       <Notice tone="warn">Importing replaces the whole timetable. Past work logs are kept.</Notice>
       <div className="mt-6 space-y-4">
         <button className="btn btn-sm" onClick={() => download("/timetable/template.xlsx", "timetable-template.xlsx").catch((e) => setError(errorText(e)))}>
@@ -74,6 +81,7 @@ export default function ImportPage() {
           </section>
         )}
       </div>
+      </>}
     </div>
   );
 }

@@ -11,5 +11,8 @@ httpx==0.28.1
 python-multipart==0.0.32
 openpyxl==3.1.5
 qrcode[pil]==8.2
+# Timetable PDF import: pdfplumber reads text PDFs locally; reportlab only builds sample PDFs for tests.
+pdfplumber==0.11.10
+reportlab==5.1.0
 # pytest 9.x crashes at startup on Python 3.10 (internal NodeId error); stay on 8.x.
 pytest==8.4.2

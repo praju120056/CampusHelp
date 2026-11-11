@@ -6,6 +6,7 @@
 # real timetable and local data (the name map links real names to Faculty N)
 data/*.xlsx
 data/*.csv
+data/*.pdf
 backend/.secret_key
 *.db
 *.db-wal

@@ -14,7 +14,7 @@ RNSIT Faculty Hackathon 2026 · Category: Software
 | Scope | The 3 modules only: requirements and acceptance criteria |
 | Wow features | Live ticket map, AI triage, workload fairness analytics |
 | LLM | Google Gemini Flash via the Gemini API. Model ID is an env var (`GEMINI_MODEL`), default `gemini-3.7-flash`; confirm the exact ID in Google AI Studio before the build. Internet available on demo day. |
-| Timetable | Build and test on a synthetic, anonymised CSE-AIML timetable first. The real RNSIT department timetable is imported from Excel once supplied, with faculty names replaced by Faculty 1…N on import |
+| Timetable | Build and test on a synthetic, anonymised CSE-AIML timetable first. The real RNSIT department timetable is imported from the department's PDF timetables (or Excel), with faculty names replaced by Faculty 1…N on import. Sections are labelled semester + letter (3A, 5B). Lab batches (A1/A2) run in parallel, so a timetable row has an optional batch. NSS/PE/Yoga, library hour, tea and lunch are not stored; societal and mini project have no single faculty and are skipped. PDFs are read by a local parser first and by Gemini (a scan, or cells the parser cannot read); the HOD reviews the draft (names behind faculty codes) before saving |
 | Python | 3.10+ (the laptop runs 3.10); avoid 3.11-only features |
 | Floor plan | None available yet: generate a simple grid-based SVG from the locations table (see B14) |
 
@@ -166,7 +166,7 @@ As built (FastAPI also serves interactive docs at `/docs`):
 
 ## 9. Demo Data
 
-- Timetable: a synthetic CSE-AIML timetable (12 faculty, ~4 sections, a full week, labs as 2-period blocks) until the team's Excel file arrives; then the real timetable, imported with names anonymised to Faculty 1…N. The real-name map stays local in `data/` and out of git.
+- Timetable: a synthetic CSE-AIML timetable (12 faculty, ~4 sections, a full week, labs as 2-period blocks) until the real PDFs are imported; then the real timetable, imported with names anonymised to Faculty 1…N. The real-name map stays local in `data/` and out of git.
 - 1 block with 2 floors, ~20 locations, each with a QR.
 - 15 tickets across categories and states, 2 overdue.
 - 4 weeks of work logs with deliberately uneven loads, so the fairness view has something to show.

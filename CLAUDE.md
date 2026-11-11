@@ -81,7 +81,7 @@ Keep these commands accurate. If you change one, update this section.
 
 ## Privacy
 
-Real faculty names and the real timetable are sensitive. Keep the real timetable file out of git (`data/*.xlsx` in `.gitignore`). Demo and tests use anonymised data (Faculty 1…N) unless the user says otherwise.
+Real faculty names and the real timetable are sensitive. Keep the real timetable file out of git (`data/*.xlsx`, `data/*.csv`, `data/*.pdf` in `.gitignore`). The AI timetable reader sends the whole PDF, real names included, to Google; it runs only when the HOD picks it or the local parser cannot read a cell. Demo and tests use anonymised data (Faculty 1…N) unless the user says otherwise.
 
 ## Asking the user
 

@@ -66,3 +66,12 @@ class SettingsIn(BaseModel):
     demo_deadline_minutes: Optional[dict[str, float]] = None
     reminder: Optional[dict[str, float]] = None
     fairness: Optional[dict[str, float]] = None
+
+
+class PdfImportIn(BaseModel):
+    """A timetable draft the HOD has reviewed. `codes` may have been edited (code → name)."""
+
+    draft: dict
+    commit: bool = False
+    create_missing: bool = True
+    replace_all: bool = False

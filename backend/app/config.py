@@ -29,16 +29,18 @@ class Settings(BaseSettings):
     gemini_api_key: str = ""
     gemini_model: str = "gemini-3.7-flash"
     gemini_timeout_seconds: float = 8.0
+    gemini_fallback_model: str = "gemini-3.5-flash"  # timetable PDF reading only, if the main model is busy
+    gemini_pdf_timeout_seconds: float = 180.0  # reading a multi-page timetable takes far longer than triage
 
     smtp_host: str = ""
     smtp_port: int = 587
     smtp_user: str = ""
     smtp_password: str = ""
     smtp_from: str = ""
-
-    public_base_url: str = "http://localhost:3000"
     # Testing: when set, every email goes to this one address instead of the real recipient.
     demo_email_to: str = ""
+
+    public_base_url: str = "http://localhost:3000"
     cors_origins: str = "http://localhost:3000"
     cors_origin_regex: str = LAN_ORIGIN_REGEX
 
